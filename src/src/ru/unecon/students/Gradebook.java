@@ -1,3 +1,5 @@
+package ru.unecon.students;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -5,7 +7,7 @@ public class Gradebook {
     private final HashMap<Student, HashMap<String, Integer>> book = new HashMap<>();
 
 
-    static void checkNotNull(ArrayList<Object> args) {
+    private static <T> void checkNotNull(List<T> args) {
         for (Object arg: args) {
             if (arg == null) {
                 throw new IllegalArgumentException("Аргумент не может быть null");
@@ -23,7 +25,7 @@ public class Gradebook {
 
     static boolean filterFor5(Collection<Integer> collections) {
         if (collections != null) {
-            return (! collections.contains(2) && ! collections.contains(3) && ! collections.contains(4));
+            return (! collections.contains(2) && ! collections.contains(3) && ! collections.contains(4) && collections.contains(5));
         }
 
         return false;
@@ -54,10 +56,7 @@ public class Gradebook {
     }
 
     public Student addStudent(String firstName, String lastName) {
-        ArrayList<Object> args = new ArrayList<>(2);
-        args.add(firstName);
-        args.add(lastName);
-        checkNotNull(args);
+        checkNotNull(List.of(firstName, lastName));
 
         Student newStudent = new Student(firstName, lastName);
 
@@ -71,24 +70,19 @@ public class Gradebook {
 
 
     public Student addStudent(Student student) {
-        ArrayList<Object> args = new ArrayList<>(1);
-        args.add(student);
-        checkNotNull(args);
+        checkNotNull(List.of(student));
 
         if (this.book.containsKey(student)) {
             return student;
         }
 
         this.book.put(student, new HashMap<>());
-        return null;
+        return student;
     }
 
 
     public Student findStudent(String firstName, String lastName) {
-        ArrayList<Object> args = new ArrayList<>(2);
-        args.add(firstName);
-        args.add(lastName);
-        checkNotNull(args);
+        checkNotNull(List.of(firstName, lastName));
 
         Student newStudent = new Student(firstName, lastName);
 
@@ -105,11 +99,7 @@ public class Gradebook {
     }
 
     public void addGrade(Student student, String subject, int grade) {
-        ArrayList<Object> args = new ArrayList<>(2);
-        args.add(student);
-        args.add(subject);
-        checkNotNull(args);
-        checkRangeGrade(grade);
+        checkNotNull(List.of(subject, student));
 
         HashMap<String, Integer> studentsGrade = this.book.get(student);
 
@@ -119,10 +109,8 @@ public class Gradebook {
     }
 
     public void removeGrade(Student student, String subject) {
-        ArrayList<Object> args = new ArrayList<>(2);
-        args.add(student);
-        args.add(subject);
-        checkNotNull(args);
+        checkNotNull(List.of(subject, student));
+
 
         HashMap<String, Integer> studentsGrade = this.book.get(student);
 
@@ -148,6 +136,6 @@ public class Gradebook {
     }
 
     public Set<Student> getStudents0() {
-        return this.book.keySet().stream().filter(key -> this.book.get(key).values() == null).collect(Collectors.toSet());
+        return this.book.keySet().stream().filter(key -> this.book.get(key).isEmpty()).collect(Collectors.toSet());
     }
 }
